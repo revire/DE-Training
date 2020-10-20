@@ -1,6 +1,7 @@
 # Homework
 # • Install Postgres database
 # • Download csv file from
+
 # • Write a program which takes some string as an input
 # and performs search by title over movie database.
 # Search should work for partial match, be case insensitive and should
@@ -14,42 +15,43 @@
 
 import csv
 import requests
-import pandas as pd
-
 import psycopg2
 from psycopg2 import sql
+import re
 
 # • Write a program in any language which loads data (only needed fields)
 # from this file into some table in efficient manner
 
+def get_dataset_from_url(url):
+    # url = 'https://raw.githubusercontent.com/Godoy/imdb-5000-movie-dataset/master/data/movie_metadata.csv'
+    data = requests.get(url)
+    list_of_movies_raw = list(csv.reader(data.content.decode().splitlines(), delimiter=','))
+    list_of_movies = []
+    for movie in list_of_movies_raw:
+        if movie not in list_of_movies:
+            list_of_movies.append(movie)
+    return list_of_movies
 
-url = 'https://raw.githubusercontent.com/Godoy/imdb-5000-movie-dataset/master/data/movie_metadata.csv'
-data = requests.get(url)
-    # decoded_content = download.content.decode('utf-8')
-cr = csv.reader(data.content.decode().splitlines(), delimiter=',')
-ml = list(cr)
+def connect_postgres():
+    pass
 
-print(len(ml))
-my_list = []
-for movie in ml:
-    if movie not in my_list:
-        my_list.append(movie)
-print(len(my_list))
+def create_databse():
+    connect_postgres()
+    creating new base
 
-#to set configs
+
 pos = psycopg2.connect()
 pos_cur = pos.cursor()
 dbname = 'de_training'
 pos.set_isolation_level(0)
-# cur.execute(sql.SQL("create database {}").format(sql.Identifier(dbname)))
+pos_cur.execute(sql.SQL("create database {}").format(sql.Identifier(dbname)))
 pos_cur.close()
 pos.close()
 
+
 con = psycopg2.connect()
-
-
 cur = con.cursor()
-print (con.get_dsn_parameters(),"\n")
+# print (con.get_dsn_parameters(),"\n")
 
 cur.execute('''
     create table if not exists movie_metadata (
@@ -81,10 +83,14 @@ cur.execute('''
         actor_2_facebook_likes int,
         imdb_score float,
         aspect_ratio float,
-        movie_facebook_likes int
+        movie_facebook_likes int,
+        unique()
     )
 ''')
 con.commit()
+cur.close()
+con.close()
+
 
 for row in my_list[1:]:
     cur.execute('''
@@ -149,25 +155,15 @@ for row in my_list[1:]:
         )
     ''', row)
 con.commit()
+cur.close()
+con.close()
 
-cur.execute('''
-    create table if not exists movie_metadata_formated as
-    select
-        id,
-        movie_title,
-        string_to_array(genres, '|')
-    from movie_metadata
-''')
-con.commit()
-
-import re
 
 def clean_string(string):
     return re.sub('[^a-zA-Z0-9]+', ' ', string)
 
 
-
-def get_film(string, cur):
+def get_film(string):
     query = clean_string(string)
     print(query)
     cur.execute('''
@@ -198,6 +194,8 @@ def get_by_genre(string):
 # get_film('big & heroes', cur)
 get_by_genre('romance, comedy')
 
+
+def main():
 
 
 
