@@ -6,25 +6,24 @@ movie should be found. For each found movie, display its title, main actor,
 genres and imdb_score. Sort results by imdb_score."""
 
 
-import psycopg2
 import sys
 
 from .de_training_database import connect, close, clean_string
 
 
 def get_film(query):
-    con, cur = connect(psycopg2, 'de_training', DBNAME, USER, PASSWORD, HOST)
+    con, cur = connect('de_training', USER, PASSWORD, HOST)
     query = clean_string(query)
     cur.execute('''
        select
-        movie_title, genres, imdb_score
+        movie_title, actor_1_name, genres, imdb_score
        from movie_metadata
        where to_tsvector(movie_title) @@ to_tsquery(replace(%s, ' ', '&'))
        order by imdb_score desc;
     ''', (query, ))
 
-    res = list(cur)
-    print(*res)
+    movies = list(cur)
+    print(*movies)
     close(con, cur)
 
 def main():
