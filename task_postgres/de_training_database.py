@@ -4,25 +4,29 @@ from this file into some table in efficient manner"""
 
 
 import csv
+import logging
 import psycopg2
 from psycopg2 import sql
 import requests
 import re
 
 
-DBNAME=
-USER=
-PASSWORD=
-HOST=
+# DBNAME=
+# USER=
+# PASSWORD=
+# HOST=
+
 
 
 def get_list_of_movies(url):
+    logging.info('Collecting dataset from url')
     data = requests.get(url)
     list_of_movies_raw = list(csv.reader(data.content.decode().splitlines(), delimiter=','))
     list_of_movies = []
     for movie in list_of_movies_raw:
         if movie not in list_of_movies:
             list_of_movies.append(movie)
+    logging.info('The dataset is ready')
     return list_of_movies
 
 
@@ -31,14 +35,18 @@ def clean_string(string):
 
 
 def connect(dbname, user, password, host):
+    logging.info(f'Connecting to {dbname}')
     con = psycopg2.connect(dbname=dbname, user=user, password=password, host=host)
     cur = con.cursor()
+    logging.info(f'Collected to {dbname}')
     return (con, cur)
 
 
 def close(con, cur):
+    dbname = con.get_dsn_parameters()['dbname']
     con.close()
     cur.close()
+    logging.info(f'Connection to {dbname} is closed')
 
 
 def create_database(db_name):
@@ -153,7 +161,7 @@ def insert_movie_metadata(con, cur, list_of_movies):
 
 def main():
     list_of_movies = get_list_of_movies('https://raw.githubusercontent.com/Godoy/imdb-5000-movie-dataset/master/data/movie_metadata.csv')
-    create_database('de_training')
+    # create_database('de_training')
     con, cur = connect('de_training', USER, PASSWORD, HOST)
     create_movie_metadata(con, cur)
     insert_movie_metadata(con, cur, list_of_movies)

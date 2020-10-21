@@ -2,17 +2,18 @@
 Multiple genres (like "Comedy" and "Adventure") can be passed an input,
 in this case both should be found in a movie."""
 
-
+import logging
 import psycopg2
 import re
 import sys
 
 # from .de_training_database import connect, close, clean_string
 
-DBNAME=
-USER=
-PASSWORD=
-HOST=
+# DBNAME=
+# USER=
+# PASSWORD=
+# HOST=
+
 
 
 
@@ -33,10 +34,11 @@ def clean_string(string):
 
 def get_by_genre(string):
     query = clean_string(string)
+    print(query)
     con, cur = connect('de_training', USER, PASSWORD, HOST)
     print(query)
     cur.execute('''
-       select
+       select distinct
           movie_title, actor_1_name, genres, imdb_score
        from movie_metadata
        where to_tsvector(genres) @@ to_tsquery(replace(%s, ' ', '&'))
@@ -44,12 +46,13 @@ def get_by_genre(string):
     ''', (query, ))
 
     movies = list(cur)
-    print(*movies)
+    for movie in movies:
+        print(*movie)
     close(con, cur)
 
 
 def main():
-    query = sys.argv[1]
+    query = ' '.join(sys.argv[1:])
     get_by_genre(query)
 
 
