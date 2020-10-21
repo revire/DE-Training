@@ -17,7 +17,6 @@ import re
 # HOST=
 
 
-
 def get_list_of_movies(url):
     logging.info('Collecting dataset from url')
     data = requests.get(url)
@@ -51,8 +50,11 @@ def close(con, cur):
 
 def create_database(db_name):
     con, cur = connect(DBNAME, USER, PASSWORD, HOST)
-    con.set_isolation_level(0)
-    cur.execute(psycopg2.sql.SQL("create database {}").format(psycopg2.sql.Identifier(db_name)))
+    try:
+        con.set_isolation_level(0)
+        cur.execute(f'create database {db_name}')
+    except psycopg2.errors.DuplicateDatabase:
+        logging.warn('Database already exists')
     close(con, cur)
 
 
@@ -161,7 +163,7 @@ def insert_movie_metadata(con, cur, list_of_movies):
 
 def main():
     list_of_movies = get_list_of_movies('https://raw.githubusercontent.com/Godoy/imdb-5000-movie-dataset/master/data/movie_metadata.csv')
-    # create_database('de_training')
+    create_database('de_training')
     con, cur = connect('de_training', USER, PASSWORD, HOST)
     create_movie_metadata(con, cur)
     insert_movie_metadata(con, cur, list_of_movies)

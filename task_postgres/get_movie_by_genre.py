@@ -15,8 +15,6 @@ import sys
 # HOST=
 
 
-
-
 def connect(dbname, user, password, host):
     con = psycopg2.connect(dbname=dbname, user=user, password=password, host=host)
     cur = con.cursor()
