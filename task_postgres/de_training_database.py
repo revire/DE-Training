@@ -9,7 +9,6 @@ from psycopg2 import sql
 import requests
 import re
 
-# from .db_config import DBNAME, USER, PASSWORD, HOST
 
 DBNAME=
 USER=
@@ -43,7 +42,7 @@ def close(con, cur):
 
 
 def create_database(db_name):
-    con, cur = connect(DBNAME, USER, PASSWORD, HOST)xthtp gfqxfhv
+    con, cur = connect(DBNAME, USER, PASSWORD, HOST)
     con.set_isolation_level(0)
     cur.execute(psycopg2.sql.SQL("create database {}").format(psycopg2.sql.Identifier(db_name)))
     close(con, cur)

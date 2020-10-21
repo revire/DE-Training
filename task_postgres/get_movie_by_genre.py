@@ -4,9 +4,31 @@ in this case both should be found in a movie."""
 
 
 import psycopg2
+import re
 import sys
 
-from .de_training_database import connect, close, clean_string
+# from .de_training_database import connect, close, clean_string
+
+DBNAME=
+USER=
+PASSWORD=
+HOST=
+
+
+
+def connect(dbname, user, password, host):
+    con = psycopg2.connect(dbname=dbname, user=user, password=password, host=host)
+    cur = con.cursor()
+    return (con, cur)
+
+
+def close(con, cur):
+    con.close()
+    cur.close()
+
+
+def clean_string(string):
+    return re.sub('[^a-zA-Z0-9]+', ' ', string)
 
 
 def get_by_genre(string):
@@ -27,7 +49,7 @@ def get_by_genre(string):
 
 
 def main():
-    query = sys.argv[0]
+    query = sys.argv[1]
     get_by_genre(query)
 
 
