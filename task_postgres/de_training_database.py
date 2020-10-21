@@ -16,6 +16,12 @@ import re
 # PASSWORD=
 # HOST=
 
+DBNAME='postgres'
+USER='postgres'
+PASSWORD='postgres'
+HOST='localhost'
+
+logging.basicConfig(level=logging.INFO)
 
 def get_list_of_movies(url):
     logging.info('Collecting dataset from url')
@@ -34,7 +40,6 @@ def clean_string(string):
 
 
 def connect(dbname, user, password, host):
-    logging.info(f'Connecting to {dbname}')
     con = psycopg2.connect(dbname=dbname, user=user, password=password, host=host)
     cur = con.cursor()
     logging.info(f'Collected to {dbname}')
@@ -93,6 +98,7 @@ def create_movie_metadata(con, cur):
         )
     ''')
     con.commit()
+    logging.info('Table movie_metadata is created')
 
 
 def insert_movie_metadata(con, cur, list_of_movies):
@@ -159,6 +165,7 @@ def insert_movie_metadata(con, cur, list_of_movies):
             )
         ''', row)
     con.commit()
+    logging.info('Table movie_metadata is populated')
 
 
 def main():
