@@ -20,6 +20,6 @@ HOST=
 
 
 - `get_movie_by_genre.py` searches for movies with the given genres in additional information.
-`python3 get_movie_by_title 'lord rings'`
+`python3 get_movie_by_genre 'romance, adventure'`
 
  
