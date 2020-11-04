@@ -32,13 +32,12 @@ def start_cluster():
 def split_data():
     pass
 
-def map_data(dockers, splits, func):
+def map_data(splits):
     for line in splits:
         for token in line.strip().split(' '):
             if token: print (token + '\t1')
 
 def reduce_data(maps):
-
     (lastKey, sum) = (None, 0)
     for line in maps:
         (key, value) = line.strip().split('\t')
@@ -49,17 +48,14 @@ def reduce_data(maps):
             (lastKey, sum) = (key, sum + int(value))
     if lastKey: print (lastKey + '\t' + str(sum))
 
-
 def count_bytes():
     pass
-
 
 def job(path_gz):
      dockers = start_cluster()
      splits = split_data(path_gz)
      result = reduce_data(map_data(dockers, splits, count_bytes))
      return result
-
 
 def main(program):
     programs = ['start_cluster', 'start_job']
