@@ -46,9 +46,13 @@ def write_bytes(ans, file):
 
 if __name__ == '__main__':
     logging.info('Started docker')
+
+    #uncomment if you run docker
     file = os.environ['INPUT_FILENAME']
-    # filesnames = os.listdir(INPUT_DIR)
-    # for file in filesnames[0:3]:
+
+    #uncomment if you pyhton script only
+    #file = os.listdir(INPUT_DIR)[0]
+
     output_file = f"{file.split('.bin')[0]}.txt"
     ans = count_bytes(file)
     write_bytes(ans, output_file)
