@@ -48,6 +48,9 @@ if __name__ == '__main__':
     logging.info('Started docker')
 
     #uncomment if you run docker
+    # logging.info(os.environ['INPUT_FILENAME'])
+    logging.info(os.path.join(INPUT_DIR, os.environ['INPUT_FILENAME']))
+
     file = os.environ['INPUT_FILENAME']
 
     #uncomment if you pyhton script only

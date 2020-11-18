@@ -40,9 +40,17 @@ def get_files(dir):
 def reduce(files):
     bytes = {0: 0, 1: 0}
     for file in files:
-        output = json.load(file)
-        bytes[0] += output['0']
-        bytes[1] += output['1']
+        with open(os.path.join(OUTPUT_DIR, file), 'r') as f:
+            try:
+                output = json.loads(f.read())
+            except json.decoder.JSONDecodeError:
+                pass
+            print(output['0'])
+            bytes[0] += output['0']
+            bytes[1] += output['1']
+    print(bytes)
+    with open(os.path.join(OUTPUT_DIR, 'result.txt'), 'w') as res:
+        json.dump(bytes, res)
 
 def start_container(file):
     host_config = client.create_host_config(
@@ -54,19 +62,23 @@ def start_container(file):
             OUTPUT_DIR: {
                 'bind': '/out',
                 'mode': 'rw'
-            }
+            },
         },
+        mem_limit='1g',
     )
     environment = {
-        'INPUT_FILENAME': f'/input_files_test/{file}'
+        'INPUT_FILENAME': file
     }
     container = client.create_container(
         image='docker_test',
         host_config=host_config,
-        environment=environment
+        environment=environment,
+        detach=False,
+
     )
     client.start(container)
     return container
+
 
 if __name__ == '__main__':
     input_files = get_files(INPUT_DIR)
@@ -74,14 +86,17 @@ if __name__ == '__main__':
 
     containers = []
     for file in input_files[0:4]:
-        print(f'/input_files_test/{file}')
         print(file)
         container = start_container(file)
         containers.append(container)
 
     for container in containers:
+        logs = client.logs(container, stdout=True, stderr=True, stream=True, tail='all')
+        for log in logs:
+            print(log)
+        # client.attach(container, stdout=True, stderr=True, stream=True, logs=True, demux=False)
         exit_code = client.wait(container)
         print(f"Container exited with code {exit_code}")
-    #
-    # output_files = get_files(OUTPUT_DIR)
-    # reduce(output_files)
+
+    output_files = get_files(OUTPUT_DIR)
+    reduce(output_files)
