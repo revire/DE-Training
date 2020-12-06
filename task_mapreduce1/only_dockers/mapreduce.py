@@ -26,8 +26,8 @@ import logging
 import json
 logging.basicConfig(level=logging.INFO)
 
-INPUT_DIR = os.path.abspath('input_files_test')
-OUTPUT_DIR = os.path.abspath('out')
+INPUT_DIR = os.path.abspath('../input_files_test')
+OUTPUT_DIR = os.path.abspath('../out')
 
 client = docker.APIClient()
 logging.info('Starting')
@@ -49,7 +49,7 @@ def reduce(files):
             bytes[0] += output['0']
             bytes[1] += output['1']
     print(bytes)
-    with open(os.path.join(OUTPUT_DIR, 'result.txt'), 'w') as res:
+    with open(os.path.join(OUTPUT_DIR, '../result.txt'), 'w') as res:
         json.dump(bytes, res)
 
 def start_container(file):
@@ -82,7 +82,7 @@ def start_container(file):
 
 if __name__ == '__main__':
     input_files = get_files(INPUT_DIR)
-    # print(*input_files[0:4], sep='\n')
+
 
     containers = []
     for file in input_files[0:4]:
@@ -94,7 +94,6 @@ if __name__ == '__main__':
         logs = client.logs(container, stdout=True, stderr=True, stream=True, tail='all')
         for log in logs:
             print(log)
-        # client.attach(container, stdout=True, stderr=True, stream=True, logs=True, demux=False)
         exit_code = client.wait(container)
         print(f"Container exited with code {exit_code}")
 

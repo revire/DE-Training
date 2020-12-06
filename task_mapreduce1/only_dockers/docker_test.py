@@ -9,8 +9,8 @@ logging.basicConfig(level=logging.INFO)
 import re
 import gzip
 
-INPUT_DIR = 'input_files_test'
-OUTPUT_DIR = 'out'
+INPUT_DIR = '../input_files_test'
+OUTPUT_DIR = '../out'
 
 
 def count_bytes(file):

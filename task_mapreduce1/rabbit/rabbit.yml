@@ -1,0 +1,46 @@
+version: '3'
+
+services:
+
+  rabbit:
+    image: rabbitmq:3-alpine
+    container_name: rabbit
+    networks:
+      - net
+    ports:
+      - '5672:5672'
+
+  sender:
+    environment:
+      - message=white rabbit
+    build:
+      context: ./sender
+      dockerfile: Dockerfile
+    volumes:
+      - ./output:/output
+    networks:
+      - net
+    restart: always
+    depends_on:
+      - rabbit
+
+
+  receiver:
+      environment:
+        - file=hello1.txt
+      build:
+        context: ./receiver
+        dockerfile: Dockerfile
+      volumes:
+        - ./output:/output
+      networks:
+        - net
+      restart: always
+      depends_on:
+        - rabbit
+
+networks:
+  net:
+
+
+
