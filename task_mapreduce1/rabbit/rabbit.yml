@@ -1,46 +1,73 @@
+
 version: '3'
+
+networks:
+    net:
 
 services:
 
   rabbit:
     image: rabbitmq:3-alpine
     container_name: rabbit
+    # logging:
+    #   driver: none
     networks:
       - net
     ports:
       - '5672:5672'
 
+
+  
   sender:
     environment:
       - message=white rabbit
+      - number_of_containers=2
     build:
       context: ./sender
       dockerfile: Dockerfile
-    volumes:
-      - ./output:/output
     networks:
       - net
-    restart: always
+    volumes:
+       - ./output:/output
+       - ./input_files_test:/input
+    # restart: always
     depends_on:
       - rabbit
 
-
-  receiver:
-      environment:
-        - file=hello1.txt
-      build:
-        context: ./receiver
-        dockerfile: Dockerfile
-      volumes:
-        - ./output:/output
-      networks:
-        - net
-      restart: always
-      depends_on:
-        - rabbit
-
-networks:
-  net:
-
-
-
+                    
+  worker0:
+   environment:
+     - file=output_file0
+   build:
+     context: ./receiver
+     dockerfile: Dockerfile
+   # limits:
+   #   cpus:'1.0'
+   #   memory:1G
+   volumes:
+     - ./output:/output
+     - ./input_files_test:/input
+   networks:
+     - net
+   restart: always
+   depends_on:
+     - rabbit
+        
+  worker1:
+   environment:
+     - file=output_file1
+   build:
+     context: ./receiver
+     dockerfile: Dockerfile
+   # limits:
+   #   cpus:'1.0'
+   #   memory:1G
+   volumes:
+     - ./output:/output
+     - ./input_files_test:/input
+   networks:
+     - net
+   restart: always
+   depends_on:
+     - rabbit
+        

@@ -1,25 +1,45 @@
 import pika
 import os
+import sys
 import logging
+import time
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.WARN)
 
-# network = os.environ['networks']
+INPUT_DIR = 'input'
 
+def get_files(dir):
+    files = os.listdir(dir)
+    return files
 
-connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbit'))
-channel = connection.channel()
+def main():
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbit'))
+    channel = connection.channel()
 
+    channel.queue_declare(queue='count_bytes')
+    message = os.environ['message']
+    number_of_containers = os.environ['number_of_containers']
 
-channel.queue_declare(queue='hello')
+    files = get_files(INPUT_DIR)
 
+    for file in files:
+        channel.basic_publish(exchange='', routing_key='count_bytes', body=file)
+        print(f" [x] Sent file {file}")
+    # print(' [*] Waiting for messages to sent. To exit press CTRL+C')
+    connection.close()
 
-message = os.environ['message']
+#
+# if __name__ == '__main__':
+#     logging.info('Started Sender')
+#     try:
+#         main()
+#     except KeyboardInterrupt:
+#         print('Interrupted')
+#         try:
+#             sys.exit(0)
+#         except SystemExit:
+#             os._exit(0)
 
-channel.basic_publish(exchange='',
-                      routing_key='hello',
-                      body=message)
-logging.info(f" [x] Sent {message}")
-
-
-connection.close()
+print('Waiting for a start 3 s')
+time.sleep(3)
+main()
