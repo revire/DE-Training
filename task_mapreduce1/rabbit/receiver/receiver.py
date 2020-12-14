@@ -11,7 +11,7 @@ import json
 import re
 import gzip
 
-# logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.INFO)
 
 # file = message = os.environ['file']
 
@@ -49,9 +49,12 @@ def write_bytes(ans, file):
         logging.warning(f'Failed to write')
 
 def main():
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbit'))
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbit',
+                                                                   heartbeat=300,
+                                                                   blocked_connection_timeout=150,
+                                                                   ))
     channel = connection.channel()
-    channel.queue_declare(queue='count_bytes')
+    channel.queue_declare(queue='bytes')
 
     def callback(ch, method, properties, body):
         print(f" [x] Received {body}")
@@ -64,8 +67,10 @@ def main():
         write_bytes(ans, output_file)
         print(' [x] Counted bytes and wrote to json')
 
+        # ch.basic_ack(delivery_tag=method.delivery_tag)
 
-    channel.basic_consume(queue='count_bytes', on_message_callback=callback, auto_ack=True)
+    channel.basic_qos(prefetch_count=1)
+    channel.basic_consume(queue='bytes', on_message_callback=callback, auto_ack=True)
     print(' [*] Waiting for messages. To exit press CTRL+C')
     channel.start_consuming()
 
