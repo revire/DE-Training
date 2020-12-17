@@ -41,24 +41,6 @@ services:
        - ./input:/input
     depends_on:
       - rabbit
-
-
-  monitoring:
-    build:
-      context: ./monitoring
-      dockerfile: Dockerfile
-    tty: true
-    environment:
-        - queue_name={queue_name}
-    networks:
-      - net
-    volumes:
-       - ./output:/output
-       - ./input:/input
-    restart: always
-    depends_on:
-      - rabbit
-
                     """
     for n in range(number_of_containers):
         container = f"""

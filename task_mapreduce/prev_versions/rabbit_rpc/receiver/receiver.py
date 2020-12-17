@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 import os
 import pika
-import sys
 import logging
 from functools import partial
 from collections import Counter
@@ -13,7 +12,6 @@ import gzip
 
 logging.basicConfig(level=logging.INFO)
 
-# file = message = os.environ['file']
 
 INPUT_DIR = 'input'
 OUTPUT_DIR = 'output'
@@ -62,6 +60,7 @@ def reduce(files):
     print(bytes)
     with open(os.path.join(OUTPUT_DIR, '../result.txt'), 'w') as res:
         json.dump(bytes, res)
+
 
 def write_bytes(ans, file):
     print(f'Writing file {file}')

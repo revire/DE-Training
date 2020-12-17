@@ -6,7 +6,7 @@ import sys
 
 
 def get_input(key):
-    input('Press any key to stop: \n')
+    input('- Press any key to stop\n')
     key.append(True)
 
 
@@ -17,14 +17,14 @@ def monitoring(files):
     monitoring = {'check_output': None, 'check_queue': None}
     input_thread = threading.Thread(target=get_input, args=(key,))
     input_thread.start()
-    while (monitoring['check_output'] != 0 and monitoring['check_queue'] != 0) and len(key)==0:
+    while (monitoring['check_output'] != 0 and monitoring['check_queue'] != 0) or len(key) == 0:
         time.sleep(5)
         for function in monitoring.keys():
             monitor_script = f'docker exec rabbit_monitoring_1 python monitoring.py {function} {files_to_send}'.split(
                 ' ')
             # print(subprocess.check_output(monitor_script).decode('utf-8').strip())
             monitoring[function] = int(subprocess.check_output(monitor_script).decode('utf-8').strip())
-        print(f'Files not found: {monitoring["check_output"]}.Messages in queue: {monitoring["check_queue"]}')
+        print(f'Files not found: {monitoring["check_output"]}. Messages in queue: {monitoring["check_queue"]}')
 
 
 def get_files(dir):
@@ -40,13 +40,23 @@ if __name__ == '__main__':
 
     files_to_send = ';'.join(files)
 
-    print('Starting mapper')
+    try:
+        print('- Checking Sender')
+        check_script = f'docker exec rabbit_sender_1 python'.split(' ')
+        subprocess.check_output(check_script)
+    except subprocess.CalledProcessError:
+        print('- Sender is not running. Start the cluster first')
+        sys.exit()
+
+    print('- Starting Mapper')
     mapper_script = f'docker exec rabbit_sender_1 python sender.py map {files_to_send}'.split(' ')
     subprocess.call(mapper_script)
 
+
+
     monitoring(files_to_send)
 
-    print('Starting reducer')
+    print('- Starting Reducer')
     output_dir = 'output'
     reducer_script = f'docker exec rabbit_sender_1 python sender.py reduce {output_dir}'.split(' ')
     subprocess.call(reducer_script)

@@ -4,7 +4,7 @@ import sys
 import logging
 import uuid
 
-
+QUEUE_NAME = os.environ['queue_name']
 
 def get_files(dir):
     files = os.listdir(dir)
@@ -37,7 +37,7 @@ class Sender(object):
         self.corr_id = str(uuid.uuid4())
         self.channel.basic_publish(
             exchange='',
-            routing_key='test',
+            routing_key=QUEUE_NAME,
             properties=pika.BasicProperties(
                 reply_to=self.callback_queue,
                 correlation_id=self.corr_id,
@@ -49,8 +49,8 @@ class Sender(object):
 
 if __name__ == '__main__':
     print(' [x] Starting Sender')
-    path_to_files = sys.argv[1]
-    files = get_files(path_to_files)
+    files_got = sys.argv[1]
+    files = files_got.split(';')
     sender = Sender()
     for file in files:
         response = sender.call(file)

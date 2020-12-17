@@ -29,7 +29,9 @@ Additional function:
 ```>: docker exec rabbit_monitoring_1 python3 monitoring.py purge_queue```
 (in case of testing you pushed sender too many times)
 
-
+- check messages in RabbitMQ queue
+```>: docker exec rabbit_monitoring_1 python3 monitoring.py check_queue```
+(if you don't want to start sender)
 _____________________________________
 Also tried:
 
