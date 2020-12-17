@@ -6,7 +6,10 @@ using MapReduce framework without use of any Hadoop products.
 
 In this version MapReduce is made with Docker Compose and RabbitMQ. 
 
-Before running the program, install RabbitMQ and Pika library for python.
+Before running the program, install 
+- RabbitMQ
+- Pika library for Python
+- Docker and Docker Compose and libs for Python
 
 Docker Compose helps to run several isolated services and that's how 
 one can start a cluster of mapreduce machines:
