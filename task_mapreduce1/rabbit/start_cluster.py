@@ -93,7 +93,9 @@ services:
 
 
 if __name__ == '__main__':
+
     number_of_containers = int(sys.argv[1])
+    print(f' [x] Starting Cluster with {number_of_containers} containers')
     queue_name = 'och'
     rabbit_yml = generate_yml(number_of_containers, queue_name)
 

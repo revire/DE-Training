@@ -113,25 +113,3 @@ services:
    depends_on:
      - rabbit
         
-  worker3:
-   environment:
-     - file=output_file3
-   build:
-     context: ./receiver
-     dockerfile: Dockerfile
-   # deploy:
-   #    resources:
-   #      limits:
-   #        cpus:'1.0'
-   #        memory:1G
-   environment:
-        - queue_name=och
-   volumes:
-     - ./output:/output
-     - ./input:/input
-   networks:
-     - net
-   restart: always
-   depends_on:
-     - rabbit
-        

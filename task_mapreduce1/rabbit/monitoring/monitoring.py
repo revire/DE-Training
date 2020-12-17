@@ -12,8 +12,8 @@ except IndexError:
     INPUT_FILES = ''
 
 
-def get_files(dir):
-    files = os.listdir(dir)
+def get_files(input_dir):
+    files = os.listdir(input_dir)
     return files
 
 
@@ -21,11 +21,8 @@ def check_output(files=INPUT_FILES):
     path_to_output_files = 'output'
     files_input = list(map(lambda x: x.split('.bin')[0], files.split(';')))
     files_output = list(map(lambda x: x.split('.txt')[0], os.listdir(path_to_output_files)))
-    not_preceeded = [file for file in files_input if file not in (files_output)]
-    print(not_preceeded, files_output)
-    result = len(not_preceeded)
-    return result
-
+    not_proceeded = [file for file in files_input if file not in files_output]
+    return len(not_proceeded)
 
 
 def check_queue():
@@ -45,8 +42,6 @@ def check_queue():
     return queue_len
 
 
-
-
 def purge_queue():
     print('Purging')
     connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbit',
@@ -57,15 +52,12 @@ def purge_queue():
     channel.queue_purge(QUEUE_NAME)
     channel.close()
 
-def check_all():
-    pass
-
 
 if __name__ == '__main__':
     functions = {'purge_queue': purge_queue,
                  'check_queue': check_queue,
                  'check_output': check_output,
-                 'check_all':check_all}
+                 }
     function = functions[sys.argv[1]]
     result = function()
     print(result)

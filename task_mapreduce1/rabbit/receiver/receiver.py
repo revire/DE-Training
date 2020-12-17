@@ -23,8 +23,7 @@ def count_bytes(file):
                 bytes[0] += count * (8 - ones)
                 bytes[1] += count * ones
     except Exception:
-        print('Failed to open')
-        logging.warning(f'Failed to open {file}')
+        print(f' [x] Failed to open {file}')
     print(bytes)
     return bytes
 
@@ -47,12 +46,12 @@ def reduce(output_dir):
 
 
 def write_bytes(ans, file):
-    print(f'Writing file {file}')
+    print(f' [x] Writing file {file}')
     try:
         with open(os.path.join(OUTPUT_DIR, file), 'w') as output_file:
             json.dump(ans, output_file)
     except Exception:
-        print('Failed to write')
+        print(' [x] Failed to write')
         print(Exception)
 
 
@@ -65,9 +64,8 @@ def main():
     channel.queue_declare(queue='och', durable=True)
 
     def callback(ch, method, properties, body):
-        print(f" [x] Received {body}")
         message = body.decode('utf-8')
-        print(message)
+        print(f" [x] Received {body}")
         function = message.split(';')[0]
         input = message.split(';')[1]
         if function == 'map':
@@ -87,7 +85,7 @@ def main():
 
 
 if __name__ == '__main__':
-    logging.info('Started receiver')
+    logging.info(' [x] Started receiver')
     try:
         main()
     except KeyboardInterrupt:

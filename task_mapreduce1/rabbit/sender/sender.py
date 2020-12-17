@@ -16,7 +16,6 @@ def send_to_workers(function, files, queue_name=QUEUE_NAME):
 
     for file in files:
         message = ';'.join([function, file])
-        print('message', message)
         channel.basic_publish(exchange='',
                               routing_key=queue_name,
                               body=message,
@@ -30,7 +29,6 @@ if __name__ == '__main__':
     print(' [x] Starting Sender')
     function = sys.argv[1]
     files_got = sys.argv[2]
-    print(function, files_got)
     files = files_got.split(';')
     send_to_workers(function, files)
 
