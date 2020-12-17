@@ -1,0 +1,115 @@
+
+version: '3'
+
+networks:
+    net:
+
+services:
+
+  rabbit:
+    image: rabbitmq:3-alpine
+    container_name: rabbit
+    networks:
+      - net
+    ports:
+      - '5672:5672'
+
+  sender:
+    build:
+      context: ./sender
+      dockerfile: Dockerfile
+    tty: true
+    environment:
+        - queue_name=och
+    networks:
+      - net
+    volumes:
+       - ./output:/output
+       - ./input:/input
+    depends_on:
+      - rabbit
+
+
+  monitoring:
+    build:
+      context: ./monitoring
+      dockerfile: Dockerfile
+    tty: true
+    environment:
+        - queue_name=och
+    networks:
+      - net
+    volumes:
+       - ./output:/output
+       - ./input:/input
+    restart: always
+    depends_on:
+      - rabbit
+
+                    
+  worker0:
+   environment:
+     - file=output_file0
+   build:
+     context: ./receiver
+     dockerfile: Dockerfile
+   # deploy:
+   #    resources:
+   #      limits:
+   #        cpus:'1.0'
+   #        memory:1G
+   environment:
+        - queue_name=och
+   volumes:
+     - ./output:/output
+     - ./input:/input
+   networks:
+     - net
+   restart: always
+   depends_on:
+     - rabbit
+        
+  worker1:
+   environment:
+     - file=output_file1
+   build:
+     context: ./receiver
+     dockerfile: Dockerfile
+   # deploy:
+   #    resources:
+   #      limits:
+   #        cpus:'1.0'
+   #        memory:1G
+   environment:
+        - queue_name=och
+   volumes:
+     - ./output:/output
+     - ./input:/input
+   networks:
+     - net
+   restart: always
+   depends_on:
+     - rabbit
+        
+  worker2:
+   environment:
+     - file=output_file2
+   build:
+     context: ./receiver
+     dockerfile: Dockerfile
+   # deploy:
+   #    resources:
+   #      limits:
+   #        cpus:'1.0'
+   #        memory:1G
+   environment:
+        - queue_name=och
+   volumes:
+     - ./output:/output
+     - ./input:/input
+   networks:
+     - net
+   restart: always
+   depends_on:
+     - rabbit
+        
