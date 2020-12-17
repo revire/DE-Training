@@ -19,11 +19,30 @@ services:
       context: ./sender
       dockerfile: Dockerfile
     tty: true
+    environment:
+        - queue_name=och
     networks:
       - net
     volumes:
        - ./output:/output
        - ./input:/input
+    depends_on:
+      - rabbit
+
+
+  monitoring:
+    build:
+      context: ./monitoring
+      dockerfile: Dockerfile
+    tty: true
+    environment:
+        - queue_name=och
+    networks:
+      - net
+    volumes:
+       - ./output:/output
+       - ./input:/input
+    restart: always
     depends_on:
       - rabbit
 
@@ -35,10 +54,12 @@ services:
      context: ./receiver
      dockerfile: Dockerfile
    # deploy:
-   #     resources:
-   #        limits:
-   #          cpus:'1.0'
-   #          memory:1G
+   #    resources:
+   #      limits:
+   #        cpus:'1.0'
+   #        memory:1G
+   environment:
+        - queue_name=och
    volumes:
      - ./output:/output
      - ./input:/input
@@ -55,10 +76,12 @@ services:
      context: ./receiver
      dockerfile: Dockerfile
    # deploy:
-   #     resources:
-   #        limits:
-   #          cpus:'1.0'
-   #          memory:1G
+   #    resources:
+   #      limits:
+   #        cpus:'1.0'
+   #        memory:1G
+   environment:
+        - queue_name=och
    volumes:
      - ./output:/output
      - ./input:/input
@@ -75,10 +98,12 @@ services:
      context: ./receiver
      dockerfile: Dockerfile
    # deploy:
-   #     resources:
-   #        limits:
-   #          cpus:'1.0'
-   #          memory:1G
+   #    resources:
+   #      limits:
+   #        cpus:'1.0'
+   #        memory:1G
+   environment:
+        - queue_name=och
    volumes:
      - ./output:/output
      - ./input:/input
@@ -95,10 +120,12 @@ services:
      context: ./receiver
      dockerfile: Dockerfile
    # deploy:
-   #     resources:
-   #        limits:
-   #          cpus:'1.0'
-   #          memory:1G
+   #    resources:
+   #      limits:
+   #        cpus:'1.0'
+   #        memory:1G
+   environment:
+        - queue_name=och
    volumes:
      - ./output:/output
      - ./input:/input

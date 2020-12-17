@@ -9,7 +9,7 @@ client = docker.APIClient()
 logging.info('Starting')
 
 
-def generate_yml(number_of_containers):
+def generate_yml(number_of_containers, queue_name):
     containers_string = []
     rabbit_yml = f"""
 version: '3'
@@ -32,11 +32,30 @@ services:
       context: ./sender
       dockerfile: Dockerfile
     tty: true
+    environment:
+        - queue_name={queue_name}
     networks:
       - net
     volumes:
        - ./output:/output
        - ./input:/input
+    depends_on:
+      - rabbit
+
+
+  monitoring:
+    build:
+      context: ./monitoring
+      dockerfile: Dockerfile
+    tty: true
+    environment:
+        - queue_name={queue_name}
+    networks:
+      - net
+    volumes:
+       - ./output:/output
+       - ./input:/input
+    restart: always
     depends_on:
       - rabbit
 
@@ -50,10 +69,12 @@ services:
      context: ./receiver
      dockerfile: Dockerfile
    # deploy:
-   #     resources:
-   #        limits:
-   #          cpus:'1.0'
-   #          memory:1G
+   #    resources:
+   #      limits:
+   #        cpus:'1.0'
+   #        memory:1G
+   environment:
+        - queue_name={queue_name}
    volumes:
      - ./output:/output
      - ./input:/input
@@ -73,7 +94,9 @@ services:
 
 if __name__ == '__main__':
     number_of_containers = int(sys.argv[1])
-    rabbit_yml = generate_yml(number_of_containers)
+    queue_name = 'och'
+    rabbit_yml = generate_yml(number_of_containers, queue_name)
+
 
     with open('rabbit.yml', 'w') as y:
         y.write(rabbit_yml)

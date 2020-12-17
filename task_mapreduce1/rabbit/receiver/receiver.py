@@ -29,19 +29,20 @@ def count_bytes(file):
     return bytes
 
 
-def reduce(files):
+def reduce(output_dir):
     bytes = {0: 0, 1: 0}
+    output = None
+    files = os.listdir(output_dir)
     for file in files:
-        with open(os.path.join(OUTPUT_DIR, file), 'r') as f:
+        with open(os.path.join(output_dir, file), 'r') as f:
             try:
                 output = json.loads(f.read())
             except json.decoder.JSONDecodeError:
                 pass
-            print(output['0'])
             bytes[0] += output['0']
             bytes[1] += output['1']
     print(bytes)
-    with open(os.path.join(OUTPUT_DIR, '../result.txt'), 'w') as res:
+    with open(os.path.join(output_dir, 'result.txt'), 'w') as res:
         json.dump(bytes, res)
 
 
@@ -65,15 +66,18 @@ def main():
 
     def callback(ch, method, properties, body):
         print(f" [x] Received {body}")
-        file = body.decode('utf-8')
-        if '.bin' in file:
-            output_file = f"{file.split('.bin')[0]}.txt"
-            ans = count_bytes(file)
+        message = body.decode('utf-8')
+        print(message)
+        function = message.split(';')[0]
+        input = message.split(';')[1]
+        if function == 'map':
+            output_file = f"{input.split('.bin')[0]}.txt"
+            ans = count_bytes(input)
             print(f" [x] Writing {body}")
             write_bytes(ans, output_file)
             print(' [x] Counted bytes and wrote to json')
-        else:
-            reduce(os.listdir(file))
+        elif function == 'reduce':
+            reduce(input)
         ch.basic_ack(delivery_tag=method.delivery_tag)
 
     channel.basic_qos(prefetch_count=1)
