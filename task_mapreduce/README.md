@@ -13,11 +13,12 @@ one can start a cluster of mapreduce machines:
 ```
 `where N is a number of machines to use for calculations`
 
-To start calculation print:
+To start calculations:
 ```
 >:rabbit$ python3 start_framework.py input
 ```
-The result is saved in output/result.txt
+`where input is a directory with binary archives to calculate.
+The result is saved in output/result.txt`
 
 The durability of the framework is guaranteed by RabbitMQ Work Queue, that allows
 to create queues and keeping messages there in cases cluster goes down. 
