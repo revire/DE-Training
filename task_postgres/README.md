@@ -2,8 +2,8 @@
 
 To start code, install Postgres and Python3
 
-In file de_training_database.py enter credentials in global environment of your database
-```python
+create file db_config.py and paste credentials for database connection:
+```
 DBNAME=
 USER=
 PASSWORD=

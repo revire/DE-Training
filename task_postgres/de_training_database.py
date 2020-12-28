@@ -6,20 +6,19 @@ from this file into some table in efficient manner"""
 import csv
 import logging
 import psycopg2
-from psycopg2 import sql
 import requests
 import re
 
+# sys.path.append('./task_postgres')
+# sys.path.remove('./task_postgres')
+import db_config
 
-# DBNAME=
-# USER=
-# PASSWORD=
-# HOST=
+DBNAME= db_config.DBNAME
+USER= db_config.USER
+PASSWORD= db_config.PASSWORD
+HOST= db_config.HOST
 
-DBNAME='postgres'
-USER='postgres'
-PASSWORD='postgres'
-HOST='localhost'
+
 
 logging.basicConfig(level=logging.INFO)
 
@@ -168,7 +167,7 @@ def insert_movie_metadata(con, cur, list_of_movies):
     logging.info('Table movie_metadata is populated')
 
 
-def main():
+def create_base():
     list_of_movies = get_list_of_movies('https://raw.githubusercontent.com/Godoy/imdb-5000-movie-dataset/master/data/movie_metadata.csv')
     create_database('de_training')
     con, cur = connect('de_training', USER, PASSWORD, HOST)
@@ -178,5 +177,8 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    create_base()
+
+
+
 

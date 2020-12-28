@@ -5,19 +5,17 @@ cover different word forms, like for "big heroes" input, "Big Hero 6"
 movie should be found. For each found movie, display its title, main actor,
 genres and imdb_score. Sort results by imdb_score."""
 
-import logging
 import psycopg2
 import re
 import sys
 
-#from .de_training_database import connect, close, clean_string
 
-
-# DBNAME=
-# USER=
-# PASSWORD=
-# HOST=
-
+sys.path.append('./task_postgres')
+import db_config
+DBNAME= db_config.DBNAME
+USER= db_config.USER
+PASSWORD= db_config.PASSWORD
+HOST= db_config.HOST
 
 
 def connect(dbname, user, password, host):
@@ -46,8 +44,9 @@ def get_film(query):
     ''', (query, ))
 
     movies = list(cur)
-    for movie in movies:
-        print(*movie)
+    # for movie in movies:
+    #     print(*movie)
+    return movies
     close(con, cur)
 
 def main():

@@ -2,17 +2,18 @@
 Multiple genres (like "Comedy" and "Adventure") can be passed an input,
 in this case both should be found in a movie."""
 
-import logging
 import psycopg2
 import re
 import sys
 
 # from .de_training_database import connect, close, clean_string
 
-# DBNAME=
-# USER=
-# PASSWORD=
-# HOST=
+sys.path.append('./task_postgres')
+import db_config
+DBNAME= db_config.DBNAME
+USER= db_config.USER
+PASSWORD= db_config.PASSWORD
+HOST= db_config.HOST
 
 
 def connect(dbname, user, password, host):
@@ -32,9 +33,7 @@ def clean_string(string):
 
 def get_by_genre(string):
     query = clean_string(string)
-    print(query)
     con, cur = connect('de_training', USER, PASSWORD, HOST)
-    print(query)
     cur.execute('''
        select distinct
           movie_title, actor_1_name, genres, imdb_score
@@ -44,8 +43,10 @@ def get_by_genre(string):
     ''', (query, ))
 
     movies = list(cur)
-    for movie in movies:
-        print(*movie)
+    # for movie in movies:
+    #     print(*movie)
+    return movies
+
     close(con, cur)
 
 
@@ -55,5 +56,4 @@ def main():
 
 
 if __name__ == '__main__':
-
     main()
