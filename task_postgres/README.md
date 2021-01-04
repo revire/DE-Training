@@ -2,7 +2,7 @@
 
 To start code, install Postgres and Python3
 
-create file db_config.py and paste credentials for database connection:
+CREATE FILE db_config.py AND PASTE YOUR CREDENTIALS for database connection:
 ```
 DBNAME=
 USER=

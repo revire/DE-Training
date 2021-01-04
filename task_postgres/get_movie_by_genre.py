@@ -6,7 +6,6 @@ import psycopg2
 import re
 import sys
 
-# from .de_training_database import connect, close, clean_string
 
 sys.path.append('./task_postgres')
 import db_config
@@ -43,17 +42,13 @@ def get_by_genre(string):
     ''', (query, ))
 
     movies = list(cur)
-    # for movie in movies:
-    #     print(*movie)
     return movies
 
     close(con, cur)
 
 
-def main():
-    query = ' '.join(sys.argv[1:])
-    get_by_genre(query)
-
-
 if __name__ == '__main__':
-    main()
+    query = ' '.join(sys.argv[1:])
+    movies = get_by_genre(query)
+    for movie in movies:
+        print(*movie)

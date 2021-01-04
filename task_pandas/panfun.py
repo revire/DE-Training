@@ -17,7 +17,6 @@ def create_movie_df(link):
     return df
 
 
-
 def get_movie_by_title(string, df):
     query = [stemmer.stem(token) for token in clean_string(string).strip().split(' ')]
 

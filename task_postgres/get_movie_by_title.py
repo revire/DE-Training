@@ -21,7 +21,7 @@ HOST= db_config.HOST
 def connect(dbname, user, password, host):
     con = psycopg2.connect(dbname=dbname, user=user, password=password, host=host)
     cur = con.cursor()
-    return (con, cur)
+    return con, cur
 
 
 def close(con, cur):
@@ -31,6 +31,7 @@ def close(con, cur):
 
 def clean_string(string):
     return re.sub('[^a-zA-Z0-9]+', ' ', string)
+
 
 def get_film(query):
     con, cur = connect('de_training', USER, PASSWORD, HOST)
@@ -44,15 +45,13 @@ def get_film(query):
     ''', (query, ))
 
     movies = list(cur)
-    # for movie in movies:
-    #     print(*movie)
-    return movies
     close(con, cur)
 
-def main():
-    query = ' '.join(sys.argv[1:])
-    get_film(query)
+    return movies
 
 
 if __name__ == '__main__':
-    main()
+    query = ' '.join(sys.argv[1:])
+    movies = get_film(query)
+    for movie in movies:
+        print(*movie)
