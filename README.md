@@ -7,4 +7,8 @@ The observed topics:
 - RDB, SQL and Postgres
 - MapReduce
 - Pandas
+- Spark
+- AWS  
 - Hadoop
+
+and others.

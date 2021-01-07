@@ -1,0 +1,6 @@
+[submodule "task_spark/task_spark/pyspark_homework"]
+	path = task_spark/task_spark/pyspark_homework
+	url = https://github.com/revire/pyspark_homework.git
+[submodule "pyspark_homework"]
+	path = pyspark_homework
+	url = https://github.com/revire/pyspark_homework.git
