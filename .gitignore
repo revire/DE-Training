@@ -1,3 +1,12 @@
+db_config.py
+*.terraform/
+task_aws/terraform.tfstate
+task_aws/terraform.tfstate.backup
+terraform.tfvars
+.terraform.*
+_DS_Store
+*.zip
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -128,6 +137,3 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-
-#Configs
-db_config.py
