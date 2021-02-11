@@ -9,7 +9,7 @@ The following program:
   
 
 How to deploy everything:
-- install terraform
+- [install terraform](https://www.terraform.io/downloads.html)
 - connect to AWS account
 - `chmod +x deploy.sh`
 - `./deploy.sh`
