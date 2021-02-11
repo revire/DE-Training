@@ -47,7 +47,6 @@ resource "aws_s3_bucket_notification" "bucket_notification" {
     lambda_function_arn = aws_lambda_function.test_lambda.arn
     events = [
       "s3:ObjectCreated:*"]
-    filter_prefix = "input-data/"
     filter_suffix = ".csv"
   }
   depends_on = [
@@ -60,7 +59,7 @@ resource "aws_cloudwatch_event_rule" "daily_trigger" {
   schedule_expression = "cron(00 18 ? * MON-FRI *)"
 }
 
-resource "aws_cloudwatch_event_target" "check_foo_every_five_minutes" {
+resource "aws_cloudwatch_event_target" "check_for_every_five_minutes" {
   rule = aws_cloudwatch_event_rule.daily_trigger.name
   target_id = "lambda"
   arn = aws_lambda_function.test_lambda.arn
