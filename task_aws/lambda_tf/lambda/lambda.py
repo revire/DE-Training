@@ -18,21 +18,21 @@ DB_PASSWORD = os.environ['DB_PASSWORD']
 
 def lambda_handler(event, context):
     try:
-        try:
-            for record in event['Records']:
-                bucket_input = record['s3']['bucket']['name']
-                file_input = record['s3']['object']['key']
-                file_input_name = file_input.split('.csv')[0]
-                logger.info(f'Handling {file_input}')
-        except Exception:
-            logger.info("Couldn't collect file")
+        for record in event['Records']:
+            bucket_input = record['s3']['bucket']['name']
+            file_input = record['s3']['object']['key']
+            file_input_name = file_input.split('.csv')[0]
 
-        s3_client = boto3.client('s3')
-        df = read_csv_from_s3(s3_client, bucket_input, file_input)
-        filtered_df = filter_df(df)
-        write_df_to_s3(s3_client, OUTPUT_BUCKET_NAME, filtered_df, file_input_name)
-        write_df_to_db(filtered_df, file_input_name, DB_NAME, DB_HOST, DB_PASSWORD, DB_USERNAME)
-        logger.info(f"Finished with {file_input_name}")
+            logger.info(f'Handling {file_input}')
+
+            s3_client = boto3.client('s3')
+
+            df = read_csv_from_s3(s3_client, bucket_input, file_input)
+            filtered_df = filter_df(df)
+            write_df_to_s3(s3_client, OUTPUT_BUCKET_NAME, filtered_df, file_input_name)
+            write_df_to_db(filtered_df, file_input_name, DB_NAME, DB_HOST, DB_PASSWORD, DB_USERNAME)
+
+            logger.info(f"Finished with {file_input_name}")
 
     except Exception:
-        logger.info("Couldn't perform lambda")
+        logger.info("Couldn't collect file")

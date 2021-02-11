@@ -1,4 +1,4 @@
 pandas==1.1.2
-sqlalchemy
-psycopg2-binary
-pyarrow
+SQLAlchemy==1.3.23
+psycopg2-binary==2.8.5
+pyarrow==3.0.0
