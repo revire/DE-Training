@@ -2,14 +2,13 @@ data "archive_file" "lambda" {
   type        = "zip"
   source_dir = "lambda"
   output_path = "outputs/lambda.zip"
-  }
+}
 
 resource "aws_lambda_function" "test_lambda" {
   filename      = "outputs/lambda.zip"
   function_name = "lambda"
   role          = aws_iam_role.lambda_role.arn
   handler       = "lambda.lambda_handler"
-  source_code_hash = filebase64sha256("outputs/lambda.zip")
   runtime = "python3.8"
   timeout = 30
   layers = [aws_lambda_layer_version.lambda_layer.arn]

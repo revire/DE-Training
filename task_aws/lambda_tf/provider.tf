@@ -52,6 +52,8 @@ resource "aws_s3_bucket_object" "layer_zip" {
   etag = filemd5("../lambda_layers/lambda_layer.zip")
 }
 
+
+
 resource "aws_default_vpc" "default" {
   tags = {
     Name = "Default VPC"
